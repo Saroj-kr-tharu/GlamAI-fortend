@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
+import { Camera, CreditCard, Eye, LogOut, Smile, Sparkles, Upload } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { Camera, Upload, Sparkles, Eye, Smile, LogOut, CreditCard } from 'lucide-react';
+import FaceAnalysisResults from './components/FaceAnalysisResults';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import SubscriptionPlans from './components/SubscriptionPlans';
 import { logout } from './redux/authSlice';
 import { decrementAnalyses } from './redux/subscriptionSlice';
-import { toast } from 'react-hot-toast';
+import { analyzeImage as analyzeImageApi } from './services/analyzeApi';
 
 function FaceForward() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -140,24 +142,39 @@ function FaceForward() {
     }
   };
 
-  const analyzeImage = () => {
+  const analyzeImage = async () => {
     if (analysesRemaining <= 0) {
       alert('You\'ve reached your monthly limit. Upgrade your plan!');
       setCurrentView('subscription');
       return;
     }
 
-    setAnalyzing(true);
-    dispatch(decrementAnalyses());
+    if (!uploadedFiles.length) {
+      toast.error('Please upload an image first.');
+      return;
+    }
 
-    // Simulate API call
-    setTimeout(() => {
-      setResults({
-        message: 'Analysis Complete',
-        status: 'Backend ra ML ko Integration baki',
-      });
+    setAnalyzing(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await analyzeImageApi(uploadedFiles[0]);
+
+      if (response.success) {
+        dispatch(decrementAnalyses());
+        setResults(response.data);
+        toast.success('Analysis complete!');
+      } else {
+        setErrorMessage(response.message);
+        toast.error(response.message);
+      }
+    } catch (err) {
+      console.error('Unexpected analysis error:', err);
+      setErrorMessage('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
+    } finally {
       setAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const handleLogout = () => {
@@ -270,7 +287,7 @@ function FaceForward() {
 
         <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           {/* Hero Section */}
-          {!selectedImage && (
+          {!selectedImage && !results && (
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
                 Discover Your Perfect Look
@@ -282,6 +299,21 @@ function FaceForward() {
             </div>
           )}
 
+          {/* ── RESULTS VIEW (full-width) ── */}
+          {results && !analyzing && (
+            <FaceAnalysisResults
+              results={results}
+              selectedImage={selectedImage}
+              onBack={() => {
+                setResults(null);
+                setSelectedImage(null);
+                setUploadedFiles([]);
+              }}
+            />
+          )}
+
+          {/* ── UPLOAD / WAITING VIEW (two-column) ── */}
+          {!results && (
           <div className="grid md:grid-cols-2 gap-8">
             {/* Upload Section */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -364,7 +396,7 @@ function FaceForward() {
               </div>
             </div>
 
-            {/* Results Section */}
+            {/* Results Section (waiting / analyzing placeholder) */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h3 className="text-xl font-semibold mb-6 flex items-center">
                 <Sparkles className="w-6 h-6 mr-2 text-blue-600" />
@@ -378,24 +410,15 @@ function FaceForward() {
                 </div>
               )}
 
-              {!analyzing && !results && (
+              {!analyzing && (
                 <div className="text-center py-12 text-gray-500">
                   <Eye className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                   <p>Upload a photo and click "Analyze Features" to get your personalized recommendations</p>
                 </div>
               )}
-
-              {results && !analyzing && (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Sparkles className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{results.message}</h4>
-                  <p className="text-gray-600">{results.status}</p>
-                </div>
-              )}
             </div>
           </div>
+          )}
 
           {/* Features Section */}
           <div className="mt-16 grid md:grid-cols-3 gap-6">
