@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configure your external API base URL here
-const API_BASE_URL =  'http://127.0.0.1:9000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/server/api';
 
 console.log('API Base URL:', API_BASE_URL);
 

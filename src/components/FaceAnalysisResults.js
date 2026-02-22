@@ -99,7 +99,7 @@ export default function FaceAnalysisResults({ results, selectedImage, onBack }) 
             </div>
 
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Your Face Analysis Results
+              Your GlamAi Results
             </h2>
 
             {/* Quick stats */}
