@@ -61,7 +61,7 @@ const Login = ({ onSwitchToSignup }) => {
           <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold mb-2">Welcome Back Saroj Kumar tharu</h2>
+          <h2 className="text-3xl font-bold mb-2">Welcome Back </h2>
           <p className="text-white/80">Sign in to continue your style journey</p>
         </div>
 
