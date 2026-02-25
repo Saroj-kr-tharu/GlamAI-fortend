@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { Lock, Mail, Sparkles } from 'lucide-react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, clearError } from '../redux/authSlice';
-import { Mail, Lock, Sparkles } from 'lucide-react';
+import { clearError, login } from '../redux/authSlice';
 
 const Login = ({ onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
@@ -61,7 +61,7 @@ const Login = ({ onSwitchToSignup }) => {
           <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
+          <h2 className="text-3xl font-bold mb-2">Welcome Back Saroj Kumar tharu</h2>
           <p className="text-white/80">Sign in to continue your style journey</p>
         </div>
 
