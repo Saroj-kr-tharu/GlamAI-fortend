@@ -124,7 +124,7 @@ pipeline{
         stage("k8s Deployment Restart"){ 
           steps{
              echo " k8s deploymnet restarting  "
-             sh "kubectl rollout restart deployment fortend-dep -n cms-ns"
+             sh "kubectl rollout restart deployment fortend-dep -n glamai-ns"
          } }
     }
 
