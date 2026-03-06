@@ -1,4 +1,10 @@
-<p align="center">
+<div align="center">
+
+# ✨ GlamAI — Frontend
+
+### AI-Powered Face Analysis & Personalized Beauty Recommendations
+
+<p>
   <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
   <img src="https://img.shields.io/badge/Redux_Toolkit-2.11-764ABC?style=for-the-badge&logo=redux&logoColor=white" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
@@ -7,25 +13,35 @@
   <img src="https://img.shields.io/badge/Jenkins-CI%2FCD-D24939?style=for-the-badge&logo=jenkins&logoColor=white" />
 </p>
 
-# ✨ GlamAI — Frontend
+<p>
+  <img src="https://img.shields.io/badge/SonarQube-Quality%20Gate-4E9BCD?style=flat-square&logo=sonarqube&logoColor=white" />
+  <img src="https://img.shields.io/badge/Trivy-Security%20Scan-1904DA?style=flat-square&logo=aquasecurity&logoColor=white" />
+  <img src="https://img.shields.io/badge/OWASP-Dependency%20Check-000000?style=flat-square&logo=owasp&logoColor=white" />
+  <img src="https://img.shields.io/badge/NGINX-Reverse%20Proxy-009639?style=flat-square&logo=nginx&logoColor=white" />
+</p>
 
-> **AI-Powered Face Analysis & Personalized Beauty Recommendations**
+<br />
 
-GlamAI is an intelligent web application that analyzes facial features using advanced AI (68+ facial landmarks) and delivers personalized makeup & styling recommendations powered by RAG (Retrieval-Augmented Generation). Upload a photo and discover your perfect look.
+> Upload a photo and discover your perfect look — powered by **68+ facial landmarks** detection and **RAG-based** personalized beauty recommendations.
+
+<br />
+
+</div>
 
 ---
 
 ## 📑 Table of Contents
 
 - [Features](#-features)
-- [Architecture Overview](#-architecture-overview)
+- [System Design & Architecture](#-system-design--architecture)
 - [Tech Stack](#-tech-stack)
-- [CI/CD Pipeline (Jenkins)](#-cicd-pipeline-jenkins)
+- [CI/CD Pipeline](#-cicd-pipeline-jenkins)
 - [Kubernetes Deployment](#-kubernetes-deployment)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
 - [Environment Variables](#-environment-variables)
 - [Docker](#-docker)
+- [Deploy to Kubernetes](#-deploy-to-kubernetes)
 - [License](#-license)
 
 ---
@@ -43,7 +59,19 @@ GlamAI is an intelligent web application that analyzes facial features using adv
 
 ---
 
-## 🏗 Architecture Overview
+## 🏗 System Design & Architecture
+
+<div align="center">
+  <img src="public/systemDesign.gif" alt="System Design & Architecture" width="85%" />
+  <br />
+  <em>▲ End-to-end system architecture — from user request to Kubernetes-orchestrated microservices</em>
+</div>
+
+<br />
+
+<details>
+<summary>📐 <strong>Architecture Diagram (Text)</strong></summary>
+<br />
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -74,9 +102,12 @@ GlamAI is an intelligent web application that analyzes facial features using adv
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Request Flow:**
-1. User accesses the app via the Ingress host URL
-2. NGINX Ingress routes traffic based on path:
+</details>
+
+### Request Flow
+
+1. User accesses the app via the **Ingress host URL**
+2. **NGINX Ingress** routes traffic based on path:
    - `/` → Frontend (React + Nginx)
    - `/server/*` → Backend API (Node.js)
    - `/model/*` → ML Model Service (Python)
@@ -87,37 +118,77 @@ GlamAI is an intelligent web application that analyzes facial features using adv
 
 ## 🛠 Tech Stack
 
+<table>
+<tr>
+<td valign="top" width="33%">
+
 ### Frontend
 | Technology | Purpose |
 |---|---|
 | **React 19** | UI framework |
-| **Redux Toolkit** | State management (auth, subscriptions) |
+| **Redux Toolkit** | State management |
 | **Tailwind CSS 4** | Utility-first styling |
 | **Axios** | HTTP client |
 | **Lucide React** | Icon library |
 | **React Hot Toast** | Notifications |
 
+</td>
+<td valign="top" width="33%">
+
 ### Infrastructure
 | Technology | Purpose |
 |---|---|
-| **Docker** | Multi-stage containerization (Node → Nginx) |
-| **Kubernetes (Kind)** | Container orchestration |
-| **NGINX** | Static file serving & reverse proxy |
+| **Docker** | Multi-stage builds |
+| **Kubernetes** | Orchestration |
+| **NGINX** | Reverse proxy |
 | **Jenkins** | CI/CD automation |
-| **kubectl** | Deployment management |
+| **kubectl** | Deployment mgmt |
+
+</td>
+<td valign="top" width="33%">
 
 ### Security & Quality
 | Tool | Purpose |
 |---|---|
-| **SonarQube** | Static code analysis & quality gate |
-| **OWASP Dependency-Check** | Vulnerability scanning for dependencies |
-| **Trivy** | File system & Docker image scanning |
+| **SonarQube** | Code analysis |
+| **OWASP** | Dep vulnerability scan |
+| **Trivy** | Image & FS scanning |
+
+</td>
+</tr>
+</table>
 
 ---
 
 ## 🔄 CI/CD Pipeline (Jenkins)
 
-The project uses a fully automated Jenkins pipeline with security scanning at every stage.
+The project uses a **fully automated Jenkins pipeline** with security scanning at every stage.
+
+<div align="center">
+  <img src="public/cicd.gif" alt="CI/CD Pipeline" width="85%" />
+  <br />
+  <em>▲ Automated Jenkins pipeline — from code commit to Kubernetes deployment</em>
+</div>
+
+<br />
+
+### Pipeline Stages
+
+| # | Stage | Description |
+|---|---|---|
+| 1 | **Clone Code** | Pulls latest code from GitHub `main` branch |
+| 2 | **SonarQube Analysis** | Runs static code analysis for bugs, code smells & vulnerabilities |
+| 3 | **Quality Gate** | Blocks pipeline if code quality thresholds are not met |
+| 4 | **OWASP Dependency Check** | Scans project dependencies against NVD for known CVEs |
+| 5 | **Trivy FS Scan** | Scans file system for security issues |
+| 6 | **Docker Build** | Multi-stage build → React app compiled → served by Nginx |
+| 7 | **Trivy Image Scan** | Scans the built Docker image for vulnerabilities |
+| 8 | **Push to DockerHub** | Pushes the verified image to DockerHub registry |
+| 9 | **K8s Rollout Restart** | Triggers a rolling restart of the Kubernetes deployment |
+
+<details>
+<summary>📐 <strong>Pipeline Diagram (Text)</strong></summary>
+<br />
 
 ```
 ┌──────────┐    ┌────────────┐    ┌──────────────┐    ┌──────────────┐
@@ -139,21 +210,10 @@ The project uses a fully automated Jenkins pipeline with security scanning at ev
                                                           └──────────────────┘
 ```
 
-### Pipeline Stages
-
-| # | Stage | Description |
-|---|---|---|
-| 1 | **Clone Code** | Pulls latest code from GitHub `main` branch |
-| 2 | **SonarQube Analysis** | Runs static code analysis for bugs, code smells & vulnerabilities |
-| 3 | **Quality Gate** | Blocks pipeline if code quality thresholds are not met |
-| 4 | **OWASP Dependency Check** | Scans project dependencies against NVD for known CVEs |
-| 5 | **Trivy FS Scan** | Scans file system for security issues |
-| 6 | **Docker Build** | Multi-stage build → React app compiled → served by Nginx |
-| 7 | **Trivy Image Scan** | Scans the built Docker image for vulnerabilities |
-| 8 | **Push to DockerHub** | Pushes the verified image to DockerHub registry |
-| 9 | **K8s Rollout Restart** | Triggers a rolling restart of the Kubernetes deployment |
+</details>
 
 ### Post-Build Notifications
+
 - ✅ **Success** — HTML email with build details and scan reports attached
 - ❌ **Failure** — HTML email with failure logs and scan reports attached
 
@@ -280,15 +340,13 @@ npm run build
 
 ## 🐳 Docker
 
-### Build
+### Build & Run
 
 ```bash
+# Build the image
 docker build -t glamai-frontend:latest .
-```
 
-### Run
-
-```bash
+# Run the container
 docker run -p 80:80 glamai-frontend:latest
 ```
 
@@ -334,6 +392,11 @@ kubectl get hpa -n glamai-ns
 
 ---
 
-<p align="center">
-  Made with ❤️ by the GlamAI Team
-</p>
+<div align="center">
+  <p>Made with ❤️ by the <strong>GlamAI Team</strong></p>
+  <p>
+    <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" />
+    <img src="https://img.shields.io/badge/Made%20with-React-61DAFB?style=flat-square&logo=react" />
+    <img src="https://img.shields.io/badge/Deployed%20on-Kubernetes-326CE5?style=flat-square&logo=kubernetes" />
+  </p>
+</div>
